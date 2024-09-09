@@ -94,6 +94,8 @@ export async function uploadInfoPersonal(data) {
   try {
     const db = getFirestore(appFirebase);
     const refUser = doc(db, 'Users', uid);
+
+
     const user = await getDoc(refUser);
     if (user.exists()) {
       const socialNetworks = [];
@@ -113,7 +115,81 @@ export async function uploadInfoPersonal(data) {
       } catch (error) {
         throw new Error(error.code);
       }
-      
+      // Crea documentos adicionales con datos por defecto
+      await setDoc(doc(db, 'Users', uid, 'About', 'Certifications'), {
+        Certifications: [
+          "Primer certificado"
+        ]
+      }, { merge: true }); // Usa merge para no sobrescribir datos existentes
+
+      await setDoc(doc(db, 'Users', uid, 'About', 'Hobbies'), {
+        Hobbies: [
+          {
+            Hobbie: "Lectura",
+            Key: "Lectura",
+            Resume: "Tu primer hobbie"
+          }
+        ]
+      }, { merge: true });
+      await setDoc(doc(db, 'Users', uid, 'About', 'Resume'), {
+        Text: "Tu resumen profesional"
+      }, { merge: true });
+      await setDoc(doc(db, 'Users', uid, 'About', 'Testimonials'), {
+        Testimonials: [
+          {
+            Image: "https://res.cloudinary.com/djss53chk/image/upload/v1723684799/Memojis/Male/xauqsfu5uzgr12fs9rjj.svg",
+            Name: "Nombre",
+            Text: "Breve descripción"
+          }
+        ]
+      }, { merge: true });
+
+      await setDoc(doc(db, 'Users', uid, 'Contact', 'InfoLocation'), {
+        AxisX: 19.354485,
+        AxisY: -99.315599
+      }, { merge: true });
+      await setDoc(doc(db, 'Users', uid, 'Portfolio', 'Works'), {
+        Works: [
+          {
+            Category: "Investigation",
+            ImgProject: "https://via.placeholder.com/150x120",
+            NameProject: "Nombre del proyecto"
+          }
+        ]
+      }, { merge: true });
+      await setDoc(doc(db, 'Users', uid, 'Resume', 'Education'), {
+        Education: [
+          {
+            Country: "Ciudad",
+            Name: "Nombre de lo que estudiaste",
+            School: "Nombre de la escuela",
+            State: "Estado",
+            YearEnd: "Año de finalización",
+            YearStart: "Año de inicio"
+
+          }
+        ]
+      }, { merge: true });
+      await setDoc(doc(db, 'Users', uid, 'Resume', 'Experience'), {
+        Experience: [
+          {
+            Company: "Nombre de la empresa",
+            End: "Año de finalización",
+            Name: "Nombre del puesto",
+            Start: "Año de inicio",
+          }
+        ]
+
+      }, { merge: true });
+      await setDoc(doc(db, 'Users', uid, 'Resume', 'Skills'), {
+        Skills: [
+          {
+            Name: "Nombre de la habilidad",
+            Value: 50
+          }
+        ]
+      }, { merge: true });
+
     } else {
       throw new Error('auth/user-not-found');
     }

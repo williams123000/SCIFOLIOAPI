@@ -10,7 +10,7 @@ import nodemailer from 'nodemailer';
 import { login, recoveryPassword, register, uploadInfoPersonal} from './modules/authentication/authentication.js';
 import { extractImagesProfiles } from './modules/system/images/images.js';
 
-import { updateAboutMe, updateResume, deleteHobbie } from './modules/UpdateInfo/updateInfo.js';
+import { updateAboutMe, updateResume, deleteHobbie, deleteTestimonial, deleteCertification, deleteEducation } from './modules/UpdateInfo/updateInfo.js';
 
 dotenv.config();
 
@@ -272,3 +272,44 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT} 🚀`);
 }
 );
+
+app.delete ('/deleteTestimonial', async (req, res) => {
+  try {
+    const { uid , id } = req.body;
+    console.log(uid, id);
+
+    await deleteTestimonial( uid , id);
+    res.sendStatus(200);
+  } catch (error) {
+    console.log ( error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.delete ('/deleteCertification', async (req, res) => {
+  try {
+    const { uid , id } = req.body;
+    console.log(uid, id);
+
+    await deleteCertification( uid , id);
+    res.sendStatus(200);
+  }
+  catch (error) {
+    console.log ( error);
+    res.status(400).json({ error: error.message });
+  }
+} );
+
+app.delete ('/deleteEducation', async (req, res) => {
+  try {
+    const { uid , id } = req.body;
+    console.log(uid, id);
+
+    await deleteEducation( uid , id);
+    res.sendStatus(200);
+  }
+  catch (error) {
+    console.log ( error);
+    res.status(400).json({ error: error.message });
+  }
+} );

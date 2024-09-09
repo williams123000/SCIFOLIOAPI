@@ -56,6 +56,9 @@ export async function updateAboutMe(data) {
         }
 
         if (certificates != undefined) {
+            var dataCertificates = await getDoc(certificationsDoc);
+            dataCertificates = dataCertificates.data().Certifications;
+            console.log(dataCertificates)
             // Transformar certificates en un array y guardar en el documento Certifications
             const certificatesList = [];
             Object.keys(certificates).forEach((key) => {
@@ -65,31 +68,42 @@ export async function updateAboutMe(data) {
 
             console.log(certificatesList);
 
-
+            const mergedList = dataCertificates.concat(certificatesList);
+            // Guardar el array en el documento Certifications
             await setDoc(certificationsDoc, {
-                Certifications: certificatesList
+                Certifications: mergedList
             });
         }
 
         if (testimonials != undefined) {
             // Transformar Testimonials en un array y guardar en el documento Testimonials
+            var dataTestimonials = await getDoc(testimonialsDoc);
+            dataTestimonials = dataTestimonials.data().Testimonials;
+            console.log(dataTestimonials)
             const testimonialsArray = [];
             Object.keys(testimonials).forEach(key => {
                 const testimonial = testimonials[key];
                 if (testimonial.Nombre && testimonial.Descripcion && testimonial.Imagen) {
+                    if (testimonial.Imagen === "Hombre") {
+                        testimonial.Imagen = "https://res.cloudinary.com/djss53chk/image/upload/v1723684799/Memojis/Male/xauqsfu5uzgr12fs9rjj.svg"
+                    }
+                    if (testimonial.Imagen === "Mujer") {
+                        testimonial.Imagen = "https://res.cloudinary.com/djss53chk/image/upload/v1725846132/Memojis/Female/f4hxxf1qyiy94r1kuyzc.png"
+                    }
                     testimonialsArray.push({
                         Image: testimonial.Imagen,
                         Name: testimonial.Nombre,
                         Text: testimonial.Descripcion
                     });
                 }
+
             });
 
             console.log(testimonialsArray);
-
+            const mergedList = dataTestimonials.concat(testimonialsArray);
             // Guardar el array en el documento Testimonials
             await setDoc(testimonialsDoc, {
-                Testimonials: testimonialsArray
+                Testimonials: mergedList
             });
         }
 
@@ -145,71 +159,87 @@ export async function updateResume(data) {
         // Crear un documento llamado Skills en la colección Resume si no existe
         const skillsDoc = doc(about, 'Skills');
 
-        // Transformar education en un array y guardar en el documento Education
-        const educationArray = [];
-        Object.keys(education).forEach(key => {
-            const edu = education[key];
-            if (edu.pais && edu.escuela && edu.estado && edu.fechaInicio && edu.fechaFin && edu.nombre) {
-                educationArray.push({
-                    Country: edu.pais,
-                    School: edu.escuela,
-                    State: edu.estado,
-                    YearStart: edu.fechaInicio,
-                    YearEnd: edu.fechaFin,
-                    Name: edu.nombre
-                });
-            }
-        });
+        if (education != undefined) {
+            var dataEducation = await getDoc(educationDoc);
+            dataEducation = dataEducation.data().Education;
+            console.log(dataEducation)
+            // Transformar education en un array y guardar en el documento Education
+            const educationArray = [];
+            Object.keys(education).forEach(key => {
+                const edu = education[key];
+                if (edu.pais && edu.escuela && edu.estado && edu.fechaInicio && edu.fechaFin && edu.nombre) {
+                    educationArray.push({
+                        Country: edu.pais,
+                        School: edu.escuela,
+                        State: edu.estado,
+                        YearStart: edu.fechaInicio,
+                        YearEnd: edu.fechaFin,
+                        Name: edu.nombre
+                    });
+                }
+            });
 
 
-        console.log(educationArray);
-        // Guardar el array en el documento Education
-        await setDoc(educationDoc, {
-            Education: educationArray
-        });
+            console.log(educationArray);
+            const mergedList = dataEducation.concat(educationArray);
+            // Guardar el array en el documento Education
+            await setDoc(educationDoc, {
+                Education: mergedList
+            });
 
+        }
 
-        // Transformar experience en un array y guardar en el documento Experience
-        const experienceArray = [];
-        Object.keys(experience).forEach(key => {
-            const exp = experience[key];
-            if (exp.compañia && exp.fechaFin && exp.fechaInicio && exp.puesto) {
-                experienceArray.push({
-                    Company: exp.compañia,
-                    Start: exp.fechaInicio,
-                    End: exp.fechaFin,
-                    Name: exp.puesto
-                });
-            }
-        });
+        if (experience != undefined) {
+            var dataExperience = await getDoc(experienceDoc);
+            dataExperience = dataExperience.data().Experience;
+            console.log(dataExperience)
+            // Transformar experience en un array y guardar en el documento Experience
+            const experienceArray = [];
+            Object.keys(experience).forEach(key => {
+                const exp = experience[key];
+                if (exp.compañia && exp.fechaFin && exp.fechaInicio && exp.puesto) {
+                    experienceArray.push({
+                        Company: exp.compañia,
+                        Start: exp.fechaInicio,
+                        End: exp.fechaFin,
+                        Name: exp.puesto
+                    });
+                }
+            });
 
-        console.log(experienceArray);
+            console.log(experienceArray);
+            const mergedList = dataExperience.concat(experienceArray);
 
-        // Guardar el array en el documento Experience
-        await setDoc(experienceDoc, {
-            Experience: experienceArray
-        });
+            // Guardar el array en el documento Experience
+            await setDoc(experienceDoc, {
+                Experience: mergedList
+            });
 
+        }
 
-        // Transformar skills en un array y guardar en el documento Skills
-        const skillsArray = [];
-        Object.keys(skills).forEach(key => {
-            const skill = skills[key];
-            if (skill.nombre && skill.nivel) {
-                skillsArray.push({
-                    Name: skill.nombre,
-                    Value: skill.nivel
-                });
-            }
-        });
+        if (skills != undefined) {
+            var dataSkills = await getDoc(skillsDoc);
+            dataSkills = dataSkills.data().Skills;
+            // Transformar skills en un array y guardar en el documento Skills
+            const skillsArray = [];
+            Object.keys(skills).forEach(key => {
+                const skill = skills[key];
+                if (skill.nombre && skill.nivel) {
+                    skillsArray.push({
+                        Name: skill.nombre,
+                        Value: skill.nivel
+                    });
+                }
+            });
 
-        console.log(skillsArray);
+            console.log(skillsArray);
+            const mergedList = dataSkills.concat(skillsArray);
 
-        // Guardar el array en el documento Skills
-        await setDoc(skillsDoc, {
-            Skills: skillsArray
-        });
-
+            // Guardar el array en el documento Skills
+            await setDoc(skillsDoc, {
+                Skills: mergedList
+            });
+        }
 
 
     } catch (error) {
@@ -235,6 +265,70 @@ export async function deleteHobbie(uid, key) {
         console.log(listHobbies)
         await setDoc(hobbiesDoc, {
             Hobbies: listHobbies
+        });
+    } catch (error) {
+        throw new Error(error.code);
+    }
+
+}
+
+export async function deleteTestimonial(uid, id) {
+    try {
+        const db = getFirestore(appFirebase);
+        const user = doc(db, 'Users', uid);
+        const about = collection(user, 'About');
+        const testimonialsDoc = doc(about, 'Testimonials');
+
+        const docSnap = await getDoc(testimonialsDoc);
+        const testimonials = docSnap.data()
+        var listTestimonials = testimonials.Testimonials;
+        listTestimonials = listTestimonials.filter(item => item.Name !== id);
+        console.log(listTestimonials)
+        await setDoc(testimonialsDoc, {
+            Testimonials: listTestimonials
+        });
+    } catch (error) {
+        throw new Error(error.code);
+    }
+
+}
+
+
+export async function deleteCertification(uid, id) {
+    try {
+        const db = getFirestore(appFirebase);
+        const user = doc(db, 'Users', uid);
+        const about = collection(user, 'About');
+        const certificationsDoc = doc(about, 'Certifications');
+
+        const docSnap = await getDoc(certificationsDoc);
+        const certifications = docSnap.data()
+        var listCertifications = certifications.Certifications;
+        listCertifications = listCertifications.filter(item => item !== id);
+        console.log(listCertifications)
+        await setDoc(certificationsDoc, {
+            Certifications: listCertifications
+        });
+    } catch (error) {
+        throw new Error(error.code);
+    }
+
+}
+
+export async function deleteEducation(uid, id) {
+    try {
+        const db = getFirestore(appFirebase);
+        const user = doc(db, 'Users', uid);
+        const resume = collection(user, 'Resume');
+        const educationDoc = doc(resume, 'Education');
+
+        const docSnap = await getDoc(educationDoc);
+        const education = docSnap.data()
+        var listEducation = education.Education;
+        listEducation = listEducation.filter(item => item.Name !== id);
+        console.log(listEducation)
+        await setDoc(educationDoc, {
+            Education: listEducation
         });
     } catch (error) {
         throw new Error(error.code);

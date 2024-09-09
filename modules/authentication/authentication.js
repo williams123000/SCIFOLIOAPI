@@ -1,9 +1,9 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword , sendPasswordResetEmail , createUserWithEmailAndPassword} from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, createUserWithEmailAndPassword } from 'firebase/auth';
 import { getAuth as getAuthAdmin } from 'firebase-admin/auth';
 import scifolio_admin_keys from '../../scifolio-firebase-adminsdk.json' assert { type: "json" };
 import admin from 'firebase-admin';
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 
 import dotenv from 'dotenv';
 
@@ -29,10 +29,10 @@ const appFirebaseAdmin = admin.initializeApp({
   credential: admin.credential.cert(scifolio_admin_keys)
 });
 
-async function createUser (name, email, phone, uid) {
+async function createUser(name, email, phone, uid) {
   try {
     const db = getFirestore(appFirebase);
-    await setDoc(doc(db, 'Users', uid),{
+    await setDoc(doc(db, 'Users', uid), {
       Name: name,
       Phone: phone,
       Email: email,
@@ -45,14 +45,14 @@ async function createUser (name, email, phone, uid) {
     throw new Error(error.code);
   }
 }
-export async function register (email, password, phone, name) {
+export async function register(email, password, phone, name) {
   try {
     const auth = getAuth(appFirebase);
     const newUser = await createUserWithEmailAndPassword(auth, email, password);
     const uid = newUser.user.uid;
     await createUser(name, email, phone, uid);
     return uid;
-  } catch (error){
+  } catch (error) {
     throw new Error(error.code);
   }
 }
@@ -60,7 +60,9 @@ export async function register (email, password, phone, name) {
 export async function login(email, password) {
   try {
     const auth = getAuth(appFirebase);
-    await signInWithEmailAndPassword(auth, email, password);
+    const uid = await signInWithEmailAndPassword(auth, email, password);
+    console.log(uid.user.uid);
+    return uid.user.uid;
   } catch (error) {
     throw new Error(error.code);
   }
@@ -75,13 +77,47 @@ async function doesUserExist(email) {
   }
 }
 
-export async function recoveryPassword (email) {
+export async function recoveryPassword(email) {
   await doesUserExist(email);
 
-  try {  
+  try {
     const auth = getAuth(appFirebase);
     await sendPasswordResetEmail(auth, email);
   } catch (error) {
     throw new Error(error.code);
+  }
+}
+
+export async function uploadInfoPersonal(data) {
+  const { uid, imageProfile, birthday, profession, socialMedia } = data;
+
+  try {
+    const db = getFirestore(appFirebase);
+    const refUser = doc(db, 'Users', uid);
+    const user = await getDoc(refUser);
+    if (user.exists()) {
+      const socialNetworks = [];
+      Object.keys(socialMedia).forEach((key) => {
+        socialNetworks.push({
+          Key: key,
+          URL: socialMedia[key] ? socialMedia[key] : ''
+        });
+      });
+      try {
+        await updateDoc(refUser, {
+          ImgProfile: imageProfile,
+          Birth: birthday,
+          Profession: profession,
+          SocialNetworks: socialNetworks
+        });
+      } catch (error) {
+        throw new Error(error.code);
+      }
+      
+    } else {
+      throw new Error('auth/user-not-found');
+    }
+  } catch (error) {
+    throw new Error(error.message);
   }
 }

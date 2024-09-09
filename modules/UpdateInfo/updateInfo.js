@@ -58,7 +58,7 @@ export async function updateAboutMe(data) {
         if (certificates != undefined) {
             var dataCertificates = await getDoc(certificationsDoc);
             dataCertificates = dataCertificates.data().Certifications;
-            console.log(dataCertificates)
+            //console.log(dataCertificates)
             // Transformar certificates en un array y guardar en el documento Certifications
             const certificatesList = [];
             Object.keys(certificates).forEach((key) => {
@@ -66,7 +66,7 @@ export async function updateAboutMe(data) {
 
             });
 
-            console.log(certificatesList);
+            //console.log(certificatesList);
 
             const mergedList = dataCertificates.concat(certificatesList);
             // Guardar el array en el documento Certifications
@@ -79,7 +79,7 @@ export async function updateAboutMe(data) {
             // Transformar Testimonials en un array y guardar en el documento Testimonials
             var dataTestimonials = await getDoc(testimonialsDoc);
             dataTestimonials = dataTestimonials.data().Testimonials;
-            console.log(dataTestimonials)
+            //console.log(dataTestimonials)
             const testimonialsArray = [];
             Object.keys(testimonials).forEach(key => {
                 const testimonial = testimonials[key];
@@ -99,7 +99,7 @@ export async function updateAboutMe(data) {
 
             });
 
-            console.log(testimonialsArray);
+            //console.log(testimonialsArray);
             const mergedList = dataTestimonials.concat(testimonialsArray);
             // Guardar el array en el documento Testimonials
             await setDoc(testimonialsDoc, {
@@ -112,7 +112,7 @@ export async function updateAboutMe(data) {
             // Transformar Hobbies en un array y guardar en el documento Hobbies
             var dataHobbies = await getDoc(hobbiesDoc);
             dataHobbies = dataHobbies.data().Hobbies;
-            console.log(dataHobbies)
+            //console.log(dataHobbies)
             const hobbiesArray = [];
             Object.keys(hobbies).forEach(key => {
                 const hobby = hobbies[key];
@@ -125,7 +125,7 @@ export async function updateAboutMe(data) {
                 }
             });
 
-            console.log(hobbiesArray);
+            //console.log(hobbiesArray);
             const mergedList = dataHobbies.concat(hobbiesArray);
             // Guardar el array en el documento Hobbies
             await updateDoc(hobbiesDoc, {
@@ -143,7 +143,7 @@ export async function updateAboutMe(data) {
 
 export async function updateResume(data) {
     const { uid, education, experience, skills } = data;
-    console.log(data);
+    //console.log(data);
     try {
 
         const db = getFirestore(appFirebase);
@@ -162,7 +162,7 @@ export async function updateResume(data) {
         if (education != undefined) {
             var dataEducation = await getDoc(educationDoc);
             dataEducation = dataEducation.data().Education;
-            console.log(dataEducation)
+            //console.log(dataEducation)
             // Transformar education en un array y guardar en el documento Education
             const educationArray = [];
             Object.keys(education).forEach(key => {
@@ -180,7 +180,7 @@ export async function updateResume(data) {
             });
 
 
-            console.log(educationArray);
+            //console.log(educationArray);
             const mergedList = dataEducation.concat(educationArray);
             // Guardar el array en el documento Education
             await setDoc(educationDoc, {
@@ -192,7 +192,7 @@ export async function updateResume(data) {
         if (experience != undefined) {
             var dataExperience = await getDoc(experienceDoc);
             dataExperience = dataExperience.data().Experience;
-            console.log(dataExperience)
+            //console.log(dataExperience)
             // Transformar experience en un array y guardar en el documento Experience
             const experienceArray = [];
             Object.keys(experience).forEach(key => {
@@ -207,7 +207,7 @@ export async function updateResume(data) {
                 }
             });
 
-            console.log(experienceArray);
+            //console.log(experienceArray);
             const mergedList = dataExperience.concat(experienceArray);
 
             // Guardar el array en el documento Experience
@@ -232,7 +232,7 @@ export async function updateResume(data) {
                 }
             });
 
-            console.log(skillsArray);
+            //console.log(skillsArray);
             const mergedList = dataSkills.concat(skillsArray);
 
             // Guardar el array en el documento Skills
@@ -262,7 +262,7 @@ export async function deleteHobbie(uid, key) {
         const hobbies = docSnap.data()
         var listHobbies = hobbies.Hobbies;
         listHobbies = listHobbies.filter(item => item.Key !== key);
-        console.log(listHobbies)
+        //console.log(listHobbies)
         await setDoc(hobbiesDoc, {
             Hobbies: listHobbies
         });
@@ -283,7 +283,7 @@ export async function deleteTestimonial(uid, id) {
         const testimonials = docSnap.data()
         var listTestimonials = testimonials.Testimonials;
         listTestimonials = listTestimonials.filter(item => item.Name !== id);
-        console.log(listTestimonials)
+        //console.log(listTestimonials)
         await setDoc(testimonialsDoc, {
             Testimonials: listTestimonials
         });
@@ -305,7 +305,7 @@ export async function deleteCertification(uid, id) {
         const certifications = docSnap.data()
         var listCertifications = certifications.Certifications;
         listCertifications = listCertifications.filter(item => item !== id);
-        console.log(listCertifications)
+        //console.log(listCertifications)
         await setDoc(certificationsDoc, {
             Certifications: listCertifications
         });
@@ -326,7 +326,7 @@ export async function deleteEducation(uid, id) {
         const education = docSnap.data()
         var listEducation = education.Education;
         listEducation = listEducation.filter(item => item.Name !== id);
-        console.log(listEducation)
+        //console.log(listEducation)
         await setDoc(educationDoc, {
             Education: listEducation
         });

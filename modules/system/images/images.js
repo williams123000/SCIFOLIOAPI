@@ -26,7 +26,7 @@ export async function extractImagesProfiles(){
     const db = getFirestore(appFirebase);
     const imgs = doc(db, 'system', 'imagesProfile');
     const urlsImages = await getDoc(imgs);
-    console.log(urlsImages.data());
+    //console.log(urlsImages.data());
 
     return urlsImages.data();
   } catch (error) {

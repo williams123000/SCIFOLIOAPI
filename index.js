@@ -49,7 +49,7 @@ app.get('/', async (req, res) => {
   console.log(firebaseConfig);
   const Test = collection(db, 'Test');
 
-  console.log(Test);
+  //console.log(Test);
 
   const TestSnapshot = await getDocs(Test);
   TestSnapshot.forEach((doc) => {

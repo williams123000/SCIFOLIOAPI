@@ -26,7 +26,6 @@ const appFirebase = initializeApp(firebaseConfig);
 
 
 
-
 export async function updateAboutMe(data) {
     const { uid, resume, certificates, hobbies, testimonials } = data;
     console.log(data);
@@ -329,6 +328,48 @@ export async function deleteEducation(uid, id) {
         //console.log(listEducation)
         await setDoc(educationDoc, {
             Education: listEducation
+        });
+    } catch (error) {
+        throw new Error(error.code);
+    }
+
+}
+
+export async function deleteExperience(uid, id) {
+    try {
+        const db = getFirestore(appFirebase);
+        const user = doc(db, 'Users', uid);
+        const resume = collection(user, 'Resume');
+        const experienceDoc = doc(resume, 'Experience');
+
+        const docSnap = await getDoc(experienceDoc);
+        const experience = docSnap.data()
+        var listExperience = experience.Experience;
+        listExperience = listExperience.filter(item => item.Name !== id);
+        //console.log(listExperience)
+        await setDoc(experienceDoc, {
+            Experience: listExperience
+        });
+    } catch (error) {
+        throw new Error(error.code);
+    }
+
+}
+
+export async function deleteSkill(uid, id) {
+    try {
+        const db = getFirestore(appFirebase);
+        const user = doc(db, 'Users', uid);
+        const resume = collection(user, 'Resume');
+        const skillsDoc = doc(resume, 'Skills');
+
+        const docSnap = await getDoc(skillsDoc);
+        const skills = docSnap.data()
+        var listSkills = skills.Skills;
+        listSkills = listSkills.filter(item => item.Name !== id);
+        //console.log(listSkills)
+        await setDoc(skillsDoc, {
+            Skills: listSkills
         });
     } catch (error) {
         throw new Error(error.code);

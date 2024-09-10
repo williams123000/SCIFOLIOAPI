@@ -10,7 +10,7 @@ import nodemailer from 'nodemailer';
 import { login, recoveryPassword, register, uploadInfoPersonal} from './modules/authentication/authentication.js';
 import { extractImagesProfiles } from './modules/system/images/images.js';
 
-import { updateAboutMe, updateResume, deleteHobbie, deleteTestimonial, deleteCertification, deleteEducation } from './modules/UpdateInfo/updateInfo.js';
+import { updateAboutMe, updateResume, deleteHobbie, deleteTestimonial, deleteCertification, deleteEducation, deleteExperience, deleteSkill } from './modules/UpdateInfo/updateInfo.js';
 
 dotenv.config();
 
@@ -108,6 +108,9 @@ app.post('/uploadInfoPersonal', async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+
+
+
 
 app.post('/uploadAbout', async (req, res) => {
   const {uid, resume, certificates, hobbies, testimonials } = req.body;
@@ -310,6 +313,32 @@ app.delete ('/deleteEducation', async (req, res) => {
   }
   catch (error) {
     console.log ( error);
+    res.status(400).json({ error: error.message });
+  }
+} );
+
+app.delete ('/deleteExperience', async (req, res) => {
+  try {
+    const { uid, id } = req.body;
+    console.log(uid, id);
+
+    await deleteExperience(uid, id);
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.delete ('/deleteSkill', async (req, res) => {
+  try {
+    const { uid, id } = req.body;
+    console.log(uid, id);
+
+    await deleteSkill(uid, id);
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
     res.status(400).json({ error: error.message });
   }
 } );

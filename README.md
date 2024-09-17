@@ -22,16 +22,16 @@ npm install
 ## Configuración del Entorno
 Configura las variables de entorno creando un archivo .env en el directorio raíz del proyecto con el siguiente contenido:
 ```bash
-- PORT=4000
-- FIREBASE_API_KEY=your-firebase-api-key
-- FIREBASE_AUTH_DOMAIN=your-firebase-auth-domain
-- FIREBASE_PROJECT_ID=your-firebase-project-id
-- FIREBASE_STORAGE_BUCKET=your-firebase-storage-bucket
-- FIREBASE_MESSAGING_SENDER_ID=your-firebase-messaging-sender-id
-- FIREBASE_APP_ID=your-firebase-app-id
-- FIREBASE_MEASUREMENT_ID=your-firebase-measurement-id
-- EMAIL_GMAIL=your-email@gmail.com
-- PASSWORD_GMAIL=your-email-password
+PORT=4000
+FIREBASE_API_KEY=your-firebase-api-key
+FIREBASE_AUTH_DOMAIN=your-firebase-auth-domain
+FIREBASE_PROJECT_ID=your-firebase-project-id
+FIREBASE_STORAGE_BUCKET=your-firebase-storage-bucket
+FIREBASE_MESSAGING_SENDER_ID=your-firebase-messaging-sender-id
+FIREBASE_APP_ID=your-firebase-app-id
+FIREBASE_MEASUREMENT_ID=your-firebase-measurement-id
+EMAIL_GMAIL=your-email@gmail.com
+PASSWORD_GMAIL=your-email-password
 ```
 Guarda el archivo de configuración de Firebase Admin SDK como scifolio-firebase-adminsdk.json en el directorio raíz. Asegúrate de que tu archivo JSON siga el formato correcto:
 ```bash

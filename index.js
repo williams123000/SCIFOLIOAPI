@@ -7,10 +7,11 @@ import cors from "cors";
 import bodyParser from 'body-parser';
 import nodemailer from 'nodemailer';
 
-import { login, recoveryPassword, register, uploadInfoPersonal} from './modules/authentication/authentication.js';
+import { login, recoveryPassword, register, uploadInfoPersonal } from './modules/authentication/authentication.js';
 import { extractImagesProfiles } from './modules/system/images/images.js';
 
-import { updateAboutMe, updateResume, deleteHobbie, deleteTestimonial, deleteCertification, deleteEducation, deleteExperience, deleteSkill } from './modules/UpdateInfo/updateInfo.js';
+import { updateAboutMe, updateResume, updatePortfolio, deleteHobbie, deleteTestimonial, deleteCertification, deleteEducation, deleteExperience, deleteSkill } from './modules/UpdateInfo/updateInfo.js';
+import { default as twilio } from 'twilio';
 
 dotenv.config();
 
@@ -113,17 +114,17 @@ app.post('/uploadInfoPersonal', async (req, res) => {
 
 
 app.post('/uploadAbout', async (req, res) => {
-  const {uid, resume, certificates, hobbies, testimonials } = req.body;
+  const { uid, resume, certificates, hobbies, testimonials } = req.body;
   console.log(uid, resume);
   try {
-    await updateAboutMe({uid, resume, certificates, hobbies, testimonials });
+    await updateAboutMe({ uid, resume, certificates, hobbies, testimonials });
     res.sendStatus(200);
   } catch (error) {
     console.log(error);
     res.status(400).json({ error: error.message });
   }
 
-  
+
 });
 
 app.post('/uploadResume', async (req, res) => {
@@ -137,7 +138,22 @@ app.post('/uploadResume', async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 
-  
+
+});
+
+app.post('/uploadPortfolio', async (req, res) => {
+  const { uid, portfolio } = req.body;
+  console.log(uid);
+  console.log(portfolio);
+  try {
+    await updatePortfolio({ uid, portfolio });
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ error: error.message });
+  }
+
+
 });
 
 
@@ -153,7 +169,7 @@ app.get('/InfoUser/:email', async (req, res) => {
     return;
   }
 
-console.log(docSnap.data());
+  console.log(docSnap.data());
   res.send(docSnap.data());
 });
 
@@ -259,16 +275,30 @@ app.get('/imagesProfile', async (req, res) => {
 })
 
 
-app.delete ('/deleteHobbie', async (req, res) => {
+app.delete('/deleteHobbie', async (req, res) => {
   try {
-    const { uid , key } = req.body;
+    const { uid, key } = req.body;
 
-    await deleteHobbie( uid , key);
+    await deleteHobbie(uid, key);
     res.sendStatus(200);
   } catch (error) {
-    console.log ( error);
+    console.log(error);
     res.status(400).json({ error: error.message });
   }
+})
+
+app.post('/testWA', async (req, res) => {
+  const { uid, emailTo, message, subjet } = req.body;
+
+  console.log(message);
+
+  transporter.sendMail({
+    from: 'williamschan72@gmail.com',
+    to: emailTo,
+    subject: subjet,
+    text: message
+  });
+  res.send(message);
 })
 
 app.listen(PORT, () => {
@@ -276,48 +306,48 @@ app.listen(PORT, () => {
 }
 );
 
-app.delete ('/deleteTestimonial', async (req, res) => {
+app.delete('/deleteTestimonial', async (req, res) => {
   try {
-    const { uid , id } = req.body;
+    const { uid, id } = req.body;
     console.log(uid, id);
 
-    await deleteTestimonial( uid , id);
+    await deleteTestimonial(uid, id);
     res.sendStatus(200);
   } catch (error) {
-    console.log ( error);
+    console.log(error);
     res.status(400).json({ error: error.message });
   }
 });
 
-app.delete ('/deleteCertification', async (req, res) => {
+app.delete('/deleteCertification', async (req, res) => {
   try {
-    const { uid , id } = req.body;
+    const { uid, id } = req.body;
     console.log(uid, id);
 
-    await deleteCertification( uid , id);
+    await deleteCertification(uid, id);
     res.sendStatus(200);
   }
   catch (error) {
-    console.log ( error);
+    console.log(error);
     res.status(400).json({ error: error.message });
   }
-} );
+});
 
-app.delete ('/deleteEducation', async (req, res) => {
+app.delete('/deleteEducation', async (req, res) => {
   try {
-    const { uid , id } = req.body;
+    const { uid, id } = req.body;
     console.log(uid, id);
 
-    await deleteEducation( uid , id);
+    await deleteEducation(uid, id);
     res.sendStatus(200);
   }
   catch (error) {
-    console.log ( error);
+    console.log(error);
     res.status(400).json({ error: error.message });
   }
-} );
+});
 
-app.delete ('/deleteExperience', async (req, res) => {
+app.delete('/deleteExperience', async (req, res) => {
   try {
     const { uid, id } = req.body;
     console.log(uid, id);
@@ -330,7 +360,7 @@ app.delete ('/deleteExperience', async (req, res) => {
   }
 });
 
-app.delete ('/deleteSkill', async (req, res) => {
+app.delete('/deleteSkill', async (req, res) => {
   try {
     const { uid, id } = req.body;
     console.log(uid, id);
@@ -341,4 +371,4 @@ app.delete ('/deleteSkill', async (req, res) => {
     console.log(error);
     res.status(400).json({ error: error.message });
   }
-} );
+});

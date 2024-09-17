@@ -248,6 +248,56 @@ export async function updateResume(data) {
 
 }
 
+export async function updatePortfolio(data) {
+    const {uid, portfolio} = data;
+    try {
+        const db = getFirestore(appFirebase);
+        const user = doc(db, 'Users', uid);
+        const portfolioref = collection(user, 'Portfolio');
+        const worksDoc = doc(portfolioref, 'Works');
+
+        if (portfolio != undefined) {
+            var dataWorks = await getDoc(worksDoc);
+            dataWorks = dataWorks.data().Works;
+            //console.log(dataWorks)
+            // Transformar works en un array y guardar en el documento Works
+            const worksArray = [];
+            Object.keys(portfolio).forEach(key => {
+                const work = portfolio[key];
+                if (work.nombre && work.categoria && work.imagen) {
+                    if (work.imagen === "Investigacion") {
+                        work.imagen = "https://res.cloudinary.com/djss53chk/image/upload/v1726442600/Portfolio/bjxpiurcd3rjmw42fecj.jpg"
+                    }
+                    if (work.imagen === "Publicacion") {
+                        work.imagen = "https://res.cloudinary.com/djss53chk/image/upload/v1726442600/Portfolio/bjxpiurcd3rjmw42fecj.jpg"
+                    }
+                    if (work.imagen === "Experimento") {
+                        work.imagen = "https://res.cloudinary.com/djss53chk/image/upload/v1726446436/Portfolio/z1j85wqyprxr9koktiku.jpg"
+                    } 
+                    worksArray.push({
+                        Category: work.categoria,
+                        NameProject: work.nombre,
+                        ImgProject: work.imagen,
+                    });
+                }
+            });
+
+            //console.log(worksArray);
+            const mergedList = dataWorks.concat(worksArray);
+            // Guardar el array en el documento Works
+            await setDoc(worksDoc, {
+                Works: mergedList
+            });
+        }
+
+        
+
+
+    } catch (error) {
+        throw new Error(error.code);
+    }
+}
+
 
 
 export async function deleteHobbie(uid, key) {

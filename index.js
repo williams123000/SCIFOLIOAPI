@@ -10,8 +10,9 @@ import nodemailer from 'nodemailer';
 import { login, recoveryPassword, register, uploadInfoPersonal } from './modules/authentication/authentication.js';
 import { extractImagesProfiles } from './modules/system/images/images.js';
 
-import { updateAboutMe, updateResume, updatePortfolio, deleteHobbie, deleteTestimonial, deleteCertification, deleteEducation, deleteExperience, deleteSkill } from './modules/UpdateInfo/updateInfo.js';
+import { updateAboutMe, updateResume, updatePortfolio, updateContact, deleteHobbie, deleteTestimonial, deleteCertification, deleteEducation, deleteExperience, deleteSkill, deleteWork } from './modules/UpdateInfo/updateInfo.js';
 import { default as twilio } from 'twilio';
+import axios from 'axios';
 
 dotenv.config();
 
@@ -301,11 +302,6 @@ app.post('/testWA', async (req, res) => {
   res.send(message);
 })
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT} 🚀`);
-}
-);
-
 app.delete('/deleteTestimonial', async (req, res) => {
   try {
     const { uid, id } = req.body;
@@ -372,3 +368,57 @@ app.delete('/deleteSkill', async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+
+app.delete('/deleteWork', async (req, res) => {
+  try {
+    const { uid, id } = req.body;
+    console.log(uid, id);
+
+    await deleteWork(uid, id);
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+
+app.post('/geocode', async (req, res) => {
+  const {uid, street, number, neighborhood, city} = req.body;
+  const direccion = `${street} ${number}, ${neighborhood}, ${city}`;
+  // Definir la clave de API de OpenCage
+  const api_key = process.env.OPENCAGE_API_KEY;
+  const url = `https://api.opencagedata.com/geocode/v1/json?q=${direccion}&key=${api_key}`;
+  try {
+    // Hacer la solicitud a la API de OpenCage
+    const response = await axios.get(url);
+
+    // Verificar si la respuesta fue exitosa
+    if (response.status === 200 && response.data.results.length > 0) {
+      const location = response.data.results[0].geometry;
+      res.json({
+        lat: location.lat,
+        lng: location.lng
+      });
+      const db = getFirestore(appFirebase);
+      const docRef = doc(db, 'Users', uid, 'Contact', 'InfoLocation'); 
+      await setDoc(docRef, {
+        AxisX: location.lat,
+        AxisY: location.lng
+      });
+
+    } else {
+      res.status(404).json({ error: "No se encontraron coordenadas para la dirección proporcionada." });
+    }
+  } catch (error) {
+    // Manejar errores de la solicitud
+    console.error(error);
+    res.status(500).json({ error: "Ocurrió un error al procesar la solicitud." });
+  }
+  
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT} 🚀`);
+}
+);

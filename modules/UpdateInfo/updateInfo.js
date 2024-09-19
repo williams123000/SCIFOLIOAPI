@@ -266,7 +266,7 @@ export async function updatePortfolio(data) {
                 const work = portfolio[key];
                 if (work.nombre && work.categoria && work.imagen) {
                     if (work.imagen === "Investigacion") {
-                        work.imagen = "https://res.cloudinary.com/djss53chk/image/upload/v1726442600/Portfolio/bjxpiurcd3rjmw42fecj.jpg"
+                        work.imagen = "https://res.cloudinary.com/djss53chk/image/upload/v1726445959/Portfolio/xlinoqqvoh9f5w9qba8q.jpg"
                     }
                     if (work.imagen === "Publicacion") {
                         work.imagen = "https://res.cloudinary.com/djss53chk/image/upload/v1726442600/Portfolio/bjxpiurcd3rjmw42fecj.jpg"
@@ -297,6 +297,28 @@ export async function updatePortfolio(data) {
         throw new Error(error.code);
     }
 }
+
+export async function updateContact(data) {
+    const {uid, contact} = data;
+    try {
+        const db = getFirestore(appFirebase);
+        const user = doc(db, 'Users', uid);
+        const contactref = collection(user, 'Contact');
+        const contactDoc = doc(contactref, 'Contact');
+
+        if (contact != undefined) {
+            await setDoc(contactDoc, {
+                Email: contact.email,
+                Phone: contact.phone,
+                Address: contact.address
+            });
+        }
+
+    } catch (error) {
+        throw new Error(error.code);
+    }
+}
+
 
 
 
@@ -420,6 +442,27 @@ export async function deleteSkill(uid, id) {
         //console.log(listSkills)
         await setDoc(skillsDoc, {
             Skills: listSkills
+        });
+    } catch (error) {
+        throw new Error(error.code);
+    }
+
+}
+
+export async function deleteWork(uid, id) {
+    try {
+        const db = getFirestore(appFirebase);
+        const user = doc(db, 'Users', uid);
+        const portfolio = collection(user, 'Portfolio');
+        const worksDoc = doc(portfolio, 'Works');
+
+        const docSnap = await getDoc(worksDoc);
+        const works = docSnap.data()
+        var listWorks = works.Works;
+        listWorks = listWorks.filter(item => item.NameProject !== id);
+        //console.log(listWorks)
+        await setDoc(worksDoc, {
+            Works: listWorks
         });
     } catch (error) {
         throw new Error(error.code);
